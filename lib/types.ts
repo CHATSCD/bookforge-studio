@@ -5,6 +5,7 @@ export interface Chapter {
 }
 
 export interface Settings {
+  author?: string;
   pageSize: "6x9" | "5x8" | "8.5x11";
   fontFamily: string;
   fontSize: number;

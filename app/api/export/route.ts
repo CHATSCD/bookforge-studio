@@ -4,7 +4,7 @@ import { buildPdf } from "@/lib/exporters/pdf";
 import { buildDocx } from "@/lib/exporters/docx";
 import { buildHtml } from "@/lib/exporters/html";
 import { copyrightText } from "@/lib/frontmatter";
-import type { Settings } from "@/lib/types";
+import type { Chapter, Settings } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       ext = "html";
       break;
     case "txt": {
-      const txt = payload.chapters.map((c) => `${c.title.toUpperCase()}\n\n${c.body}`).join("\n\n\n");
+      const txt = payload.chapters.map((c: Chapter) => `${c.title.toUpperCase()}\n\n${c.body}`).join("\n\n\n");
       buffer = new TextEncoder().encode(txt);
       mime = "text/plain";
       ext = "txt";
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       break;
   }
 
-  return new NextResponse(buffer, {
+  return new NextResponse(Buffer.from(buffer), {
     headers: {
       "Content-Type": mime,
       "Content-Disposition": `attachment; filename="${slug}.${ext}"`,

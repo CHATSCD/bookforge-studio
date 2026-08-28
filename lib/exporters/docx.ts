@@ -6,6 +6,7 @@ import {
   Packer,
   PageBreak,
   Paragraph,
+  TextRun,
 } from "docx";
 import type { ExportPayload } from "./epub";
 
@@ -30,7 +31,12 @@ export async function buildDocx(p: ExportPayload): Promise<Buffer> {
 
   if (p.includeCopyright) {
     p.copyright.split("\n\n").forEach((block) =>
-      children.push(new Paragraph({ text: block.replace(/\n/g, " "), spacing: { after: 220 }, size: 20 }))
+      children.push(
+        new Paragraph({
+          children: [new TextRun({ text: block.replace(/\n/g, " "), size: 20 })],
+          spacing: { after: 220 },
+        })
+      )
     );
     children.push(new Paragraph({ children: [new PageBreak()] }));
   }

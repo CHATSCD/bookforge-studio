@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
-  const { mode, text, title, author, genre } = await req.json();
+  const { mode, action, text, title, author, genre, characterName, cast } = await req.json();
 
   if (!process.env.DEEPSEEK_API_KEY) {
     return NextResponse.json({
@@ -42,6 +42,22 @@ export async function POST(req: NextRequest) {
       system += " Analyze the manuscript: structure, pacing, voice, market positioning, strengths, and a prioritized revision plan.";
       user = `Analyze this manuscript excerpt and give a professional editorial assessment:\n\n${excerpt}`;
       break;
+    case "character": {
+      system += " You are an expert character developer and story-bible architect. You invent psychologically rich, internally consistent characters with compelling backstories, motivations, flaws, and arcs that serve the story. For every character you also define links to other characters as an array of {name, label}.";
+      const existingCast = cast ? cast : "";
+
+      if (action === "cast") {
+        system += " Generate a complete, balanced cast.";
+        user = `Based on this manuscript, invent a full cast: one protagonist, one antagonist, and 2-3 supporting characters. Return ONLY a JSON array of objects, each with EXACTLY these keys: name, role, age, appearance, personality, backstory, motivation, fears, arc, relationships, speechPattern, quirks, notes, links. Role must be one of: Protagonist, Antagonist, Supporting, Minor. links is an array of objects {name, label} naming other characters and the relationship. No markdown, no code fences, no commentary.\n\nTitle: "${title}"\n\nManuscript:\n\n${excerpt}`;
+      } else if (action === "deepen") {
+        system += " Deepen and enrich the given character while staying consistent with the manuscript and existing cast.";
+        user = `Deepen the character "${characterName || "the selected character"}"${existingCast ? ` (existing cast: ${existingCast})` : ""}. Return ONLY a JSON object with EXACTLY these keys: name, role, age, appearance, personality, backstory, motivation, fears, arc, relationships, speechPattern, quirks, notes, links. Keep the same name. links is an array of objects {name, label}. No markdown, no code fences, no commentary.\n\nManuscript context:\n\n${excerpt}`;
+      } else {
+        system += " Create a single compelling new character that fits naturally into the story.";
+        user = `Invent one new compelling character that fits this manuscript${existingCast ? ` (avoid clashing with: ${existingCast})` : ""}. Return ONLY a JSON object with EXACTLY these keys: name, role, age, appearance, personality, backstory, motivation, fears, arc, relationships, speechPattern, quirks, notes, links. links is an array of objects {name, label} connecting to existing cast. No markdown, no code fences, no commentary.\n\nManuscript:\n\n${excerpt}`;
+      }
+      break;
+    }
     default:
       system += " Be a helpful writing assistant.";
       user = text || "Help me with my book.";

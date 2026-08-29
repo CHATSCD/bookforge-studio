@@ -20,7 +20,8 @@ export default function AIPanel({ project }: { project: Project }) {
   const [copied, setCopied] = useState(false);
 
   const run = async () => {
-    setBusy(true); setResult("");
+    setBusy(true);
+    setResult("");
     try {
       const res = await fetch("/api/deepseek", {
         method: "POST",
@@ -54,9 +55,7 @@ export default function AIPanel({ project }: { project: Project }) {
         <h2 className="text-2xl font-extrabold flex items-center gap-2">
           <Sparkles className="text-indigo-600" /> DeepSeek AI Assistant
         </h2>
-        <p className="text-slate-500 text-sm mt-1">
-          Your attached AI co-writer for editing, critique, expansion, blurbs, and cover design.
-        </p>
+        <p className="text-slate-500 text-sm mt-1">Your attached AI co-writer for editing, critique, expansion, blurbs, and cover design.</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -74,12 +73,7 @@ export default function AIPanel({ project }: { project: Project }) {
 
       <div className="card space-y-2">
         <label className="label">Text to work on (leave empty to use your first chapter)</label>
-        <textarea
-          className="input h-40 resize-none font-serif text-sm"
-          value={focus}
-          onChange={(e) => setFocus(e.target.value)}
-          placeholder="Paste a passage, chapter, or leave blank…"
-        />
+        <textarea className="input h-40 resize-none font-serif text-sm" value={focus} onChange={(e) => setFocus(e.target.value)} placeholder="Paste a passage, chapter, or leave blank…" />
         <button className="btn-primary" onClick={run} disabled={busy}>
           {busy ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
           {busy ? "DeepSeek is thinking…" : "Run with DeepSeek"}

@@ -7,5 +7,4 @@ if (!url || !key) {
   console.warn("Supabase env vars missing — project saving is disabled.");
 }
 
-export const supabase =
-  url && key ? createClient(url, key) : (null as unknown as ReturnType<typeof createClient>);
+export const supabase = url && key ? createClient(url, key) : (null as unknown as ReturnType<typeof createClient>);

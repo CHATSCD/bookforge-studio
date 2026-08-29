@@ -1,3 +1,6 @@
+-- BookForge Studio — Supabase schema
+-- Run this in the Supabase SQL Editor (Dashboard → SQL Editor)
+
 create extension if not exists "pgcrypto";
 
 create table if not exists public.projects (
@@ -9,6 +12,7 @@ create table if not exists public.projects (
   subtitle text default '',
   raw_text text default '',
   chapters jsonb default '[]'::jsonb,
+  characters jsonb default '[]'::jsonb,
   settings jsonb default '{}'::jsonb,
   cover jsonb default '{}'::jsonb,
   front_matter jsonb default '{}'::jsonb

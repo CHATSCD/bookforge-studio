@@ -13,13 +13,13 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
 
 export default function FrontMatter({ project, patch }: { project: Project; patch: (p: Partial<Project>) => void }) {
   const s = project.settings;
-
   return (
     <div className="max-w-4xl space-y-6">
       <div>
         <h2 className="text-2xl font-extrabold">Front matter</h2>
         <p className="text-slate-500 text-sm mt-1">
-          These pages are generated automatically and inserted in print-ready order: <b>Title → Copyright → Dedication → Contents → Chapters</b>.
+          These pages are generated automatically and inserted in print-ready order:
+          <b> Title → Copyright → Dedication → Dramatis Personae → Contents → Chapters</b>.
         </p>
       </div>
 
@@ -28,28 +28,32 @@ export default function FrontMatter({ project, patch }: { project: Project; patc
         <Toggle label="Copyright page" checked={s.includeCopyright} onChange={(v) => patch({ settings: { ...s, includeCopyright: v } })} />
         <Toggle label="Dedication page" checked={s.includeDedication} onChange={(v) => patch({ settings: { ...s, includeDedication: v } })} />
         <Toggle label="Table of contents" checked={s.includeToc} onChange={(v) => patch({ settings: { ...s, includeToc: v } })} />
+        <Toggle label="Dramatis Personae (character bios)" checked={s.includeDramatisPersonae} onChange={(v) => patch({ settings: { ...s, includeDramatisPersonae: v } })} />
       </div>
 
       {s.includePrelude && (
         <div className="card space-y-2">
           <h3 className="font-bold">Prelude / epigraph</h3>
-          <textarea
-            className="input h-24 resize-none font-serif italic"
-            value={project.frontMatter.prelude}
-            onChange={(e) => patch({ frontMatter: { ...project.frontMatter, prelude: e.target.value } })}
-          />
+          <textarea className="input h-24 resize-none font-serif italic" value={project.frontMatter.prelude} onChange={(e) => patch({ frontMatter: { ...project.frontMatter, prelude: e.target.value } })} />
         </div>
       )}
 
       {s.includeDedication && (
         <div className="card space-y-2">
           <h3 className="font-bold">Dedication</h3>
-          <textarea
-            className="input h-20 resize-none font-serif italic"
-            placeholder="To those who never stopped believing…"
-            value={s.dedication}
-            onChange={(e) => patch({ settings: { ...s, dedication: e.target.value } })}
-          />
+          <textarea className="input h-20 resize-none font-serif italic" placeholder="To those who never stopped believing…" value={s.dedication} onChange={(e) => patch({ settings: { ...s, dedication: e.target.value } })} />
+        </div>
+      )}
+
+      {s.includeDramatisPersonae && (
+        <div className="card space-y-2">
+          <h3 className="font-bold">Dramatis Personae</h3>
+          <label className="label">Section title</label>
+          <input className="input" value={s.dramatisTitle} onChange={(e) => patch({ settings: { ...s, dramatisTitle: e.target.value } })} />
+          <p className="text-xs text-slate-500">
+            Character bios (name, role, appearance, personality, backstory) are pulled from the <b>Characters</b> tab and inserted
+            before Chapter 1 in EPUB / PDF / DOCX / HTML exports.
+          </p>
         </div>
       )}
 
@@ -70,9 +74,7 @@ export default function FrontMatter({ project, patch }: { project: Project; patc
             <label className="label">Rights text</label>
             <textarea className="input h-28 resize-none text-xs" value={s.rights} onChange={(e) => patch({ settings: { ...s, rights: e.target.value } })} />
           </div>
-          <div className="rounded-lg bg-slate-50 p-3 text-xs text-slate-500 whitespace-pre-wrap">
-            {copyrightText({ ...s, author: project.author })}
-          </div>
+          <div className="rounded-lg bg-slate-50 p-3 text-xs text-slate-500 whitespace-pre-wrap">{copyrightText({ ...s, author: project.author })}</div>
         </div>
       )}
 

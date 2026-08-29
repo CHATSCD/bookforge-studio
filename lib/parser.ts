@@ -28,11 +28,7 @@ export function detectChapters(rawText: string): Chapter[] {
   for (const line of lines) {
     if (isHeading(line)) {
       flushBody();
-      current = {
-        id: `c${chapters.length + 1}`,
-        title: line.trim().replace(/^#+\s*/, ""),
-        body: "",
-      };
+      current = { id: `c${chapters.length + 1}`, title: line.trim().replace(/^#+\s*/, ""), body: "" };
       chapters.push(current);
     } else {
       buf.push(line);

@@ -4,8 +4,30 @@ export interface Chapter {
   body: string;
 }
 
+export interface CharacterLink {
+  name: string;
+  label: string;
+}
+
+export interface Character {
+  id: string;
+  name: string;
+  role: "Protagonist" | "Antagonist" | "Supporting" | "Minor" | "Other";
+  age: string;
+  appearance: string;
+  personality: string;
+  backstory: string;
+  motivation: string;
+  fears: string;
+  arc: string;
+  relationships: string;
+  speechPattern: string;
+  quirks: string;
+  notes: string;
+  links: CharacterLink[];
+}
+
 export interface Settings {
-  author?: string;
   pageSize: "6x9" | "5x8" | "8.5x11";
   fontFamily: string;
   fontSize: number;
@@ -16,6 +38,8 @@ export interface Settings {
   includeCopyright: boolean;
   includeDedication: boolean;
   includeToc: boolean;
+  includeDramatisPersonae: boolean;
+  dramatisTitle: string;
   copyrightYear: string;
   isbn: string;
   rights: string;
@@ -60,6 +84,7 @@ export interface Project {
   author: string;
   rawText: string;
   chapters: Chapter[];
+  characters: Character[];
   settings: Settings;
   cover: CoverConfig;
   frontMatter: FrontMatterConfig;
@@ -72,6 +97,7 @@ export function defaultProject(): Project {
     author: "Your Name",
     rawText: "",
     chapters: [],
+    characters: [],
     settings: {
       pageSize: "6x9",
       fontFamily: "Georgia",
@@ -83,9 +109,12 @@ export function defaultProject(): Project {
       includeCopyright: true,
       includeDedication: false,
       includeToc: true,
+      includeDramatisPersonae: false,
+      dramatisTitle: "Dramatis Personae",
       copyrightYear: String(new Date().getFullYear()),
       isbn: "",
-      rights: "All rights reserved. No part of this publication may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the publisher, except in the case of brief quotations embodied in critical reviews and certain other noncommercial uses permitted by copyright law.",
+      rights:
+        "All rights reserved. No part of this publication may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the publisher, except in the case of brief quotations embodied in critical reviews and certain other noncommercial uses permitted by copyright law.",
       dedication: "",
       blurb: "",
       authorBio: "",

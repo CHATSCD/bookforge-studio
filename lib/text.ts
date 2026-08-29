@@ -26,7 +26,10 @@ export function textToHtml(text: string): string {
   };
   for (const line of lines) {
     const t = line.trim();
-    if (!t) { flush(); continue; }
+    if (!t) {
+      flush();
+      continue;
+    }
     if (/^#{2,4}\s/.test(t)) {
       flush();
       out.push(`<h2>${inline(t.replace(/^#+\s*/, ""))}</h2>`);

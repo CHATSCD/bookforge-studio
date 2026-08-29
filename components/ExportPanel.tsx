@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import {
-  Download, Loader2, FileText, FileType2, FileCode, File as FileIcon, BookOpen, AlertCircle
+  Download, Loader2, FileText, FileType2, FileCode, File as FileIcon, BookOpen, AlertCircle,
 } from "lucide-react";
 import { copyrightText } from "@/lib/frontmatter";
 import type { Project } from "@/lib/types";
@@ -29,6 +29,7 @@ export default function ExportPanel({ project }: { project: Project }) {
           author: project.author,
           rawText: project.rawText,
           chapters: project.chapters,
+          characters: project.characters,
           settings: project.settings,
           copyright: copyrightText({ ...project.settings, author: project.author }),
           dedication: project.settings.dedication || project.frontMatter.dedication,
@@ -57,9 +58,7 @@ export default function ExportPanel({ project }: { project: Project }) {
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-extrabold">Export & publish</h2>
-        <p className="text-slate-500 text-sm mt-1">
-          One click generates the complete book with front matter, cover, and chapters.
-        </p>
+        <p className="text-slate-500 text-sm mt-1">One click generates the complete book with front matter, cover, characters, and chapters.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -86,9 +85,7 @@ export default function ExportPanel({ project }: { project: Project }) {
 
       <div className="card bg-amber-50 border-amber-200 text-sm text-amber-800">
         <p className="flex items-center gap-2 font-semibold"><AlertCircle size={16} /> Kindle note</p>
-        <p className="mt-1">
-          Amazon retired MOBI in 2023. Kindle now accepts <b>EPUB</b> — export EPUB and upload to KDP or use Send-to-Kindle.
-        </p>
+        <p className="mt-1">Amazon retired MOBI in 2023. Kindle now accepts <b>EPUB</b> — export EPUB and upload to KDP or use Send-to-Kindle.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

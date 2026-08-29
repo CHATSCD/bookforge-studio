@@ -10,23 +10,28 @@ export default function UploadZone({ onImported }: { onImported: (text: string, 
   const [filename, setFilename] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = useCallback(async (file: File) => {
-    setError(""); setBusy(true); setPreview("");
-    try {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: form });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      setFilename(file.name);
-      setPreview(data.text.slice(0, 1200));
-      onImported(data.text, file.name);
-    } catch (e: any) {
-      setError(e.message || "Something went wrong");
-    } finally {
-      setBusy(false);
-    }
-  }, [onImported]);
+  const handleFile = useCallback(
+    async (file: File) => {
+      setError("");
+      setBusy(true);
+      setPreview("");
+      try {
+        const form = new FormData();
+        form.append("file", file);
+        const res = await fetch("/api/upload", { method: "POST", body: form });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Upload failed");
+        setFilename(file.name);
+        setPreview(data.text.slice(0, 1200));
+        onImported(data.text, file.name);
+      } catch (e: any) {
+        setError(e.message || "Something went wrong");
+      } finally {
+        setBusy(false);
+      }
+    },
+    [onImported]
+  );
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -87,9 +92,7 @@ export default function UploadZone({ onImported }: { onImported: (text: string, 
               Structure it <ArrowRight size={14} />
             </button>
           </div>
-          <pre className="max-h-48 overflow-auto rounded-lg bg-slate-50 p-3 text-xs text-slate-600 whitespace-pre-wrap">
-            {preview}
-          </pre>
+          <pre className="max-h-48 overflow-auto rounded-lg bg-slate-50 p-3 text-xs text-slate-600 whitespace-pre-wrap">{preview}</pre>
         </div>
       )}
     </div>

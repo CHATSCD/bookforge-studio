@@ -1,12 +1,5 @@
 import {
-  AlignmentType,
-  Document,
-  HeadingLevel,
-  ImageRun,
-  Packer,
-  PageBreak,
-  Paragraph,
-  TextRun,
+  AlignmentType, Document, HeadingLevel, ImageRun, Packer, PageBreak, Paragraph,
 } from "docx";
 import type { ExportPayload } from "./epub";
 
@@ -31,12 +24,7 @@ export async function buildDocx(p: ExportPayload): Promise<Buffer> {
 
   if (p.includeCopyright) {
     p.copyright.split("\n\n").forEach((block) =>
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: block.replace(/\n/g, " "), size: 20 })],
-          spacing: { after: 220 },
-        })
-      )
+      children.push(new Paragraph({ text: block.replace(/\n/g, " "), spacing: { after: 220 }, size: 20 }))
     );
     children.push(new Paragraph({ children: [new PageBreak()] }));
   }
@@ -54,11 +42,22 @@ export async function buildDocx(p: ExportPayload): Promise<Buffer> {
     children.push(new Paragraph({ children: [new PageBreak()] }));
   }
 
+  if (p.includeDramatisPersonae && p.characters?.length) {
+    children.push(new Paragraph({ text: p.dramatisTitle || "Dramatis Personae", heading: HeadingLevel.HEADING_1 }));
+    p.characters.forEach((ch) => {
+      children.push(new Paragraph({ text: `${ch.name} (${ch.role})`, heading: HeadingLevel.HEADING_2 }));
+      if (ch.appearance) children.push(new Paragraph({ text: ch.appearance.replace(/\n/g, " "), spacing: { after: 120 } }));
+      if (ch.personality) children.push(new Paragraph({ text: ch.personality.replace(/\n/g, " "), spacing: { after: 120 } }));
+      if (ch.backstory) children.push(new Paragraph({ text: ch.backstory.replace(/\n/g, " "), spacing: { after: 240 } }));
+    });
+    children.push(new Paragraph({ children: [new PageBreak()] }));
+  }
+
   p.chapters.forEach((c) => {
     children.push(new Paragraph({ text: c.title, heading: HeadingLevel.HEADING_1 }));
-    c.body.split(/\n\s*\n/).forEach((block) =>
-      children.push(new Paragraph({ text: block.replace(/\n/g, " "), spacing: { after: 220 } }))
-    );
+    c.body
+      .split(/\n\s*\n/)
+      .forEach((block) => children.push(new Paragraph({ text: block.replace(/\n/g, " "), spacing: { after: 220 } })));
   });
 
   const doc = new Document({ sections: [{ properties: {}, children }] });

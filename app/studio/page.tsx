@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import {
-  BookOpen, Wand2, Image as ImageIcon, Layout as LayoutIcon, Eye, Sparkles, Loader2, Check
+  BookOpen, Wand2, Image as ImageIcon, Layout as LayoutIcon, Eye, Sparkles, Save, Loader2, Check, Users,
 } from "lucide-react";
 import UploadZone from "@/components/UploadZone";
 import Editor from "@/components/Editor";
@@ -10,12 +10,14 @@ import FrontMatter from "@/components/FrontMatter";
 import Preview from "@/components/Preview";
 import ExportPanel from "@/components/ExportPanel";
 import AIPanel from "@/components/AIPanel";
+import CharacterDevelopment from "@/components/CharacterDevelopment";
 import { defaultProject, type Project } from "@/lib/types";
 import { detectChapters } from "@/lib/parser";
 
 const TABS = [
   { id: "upload", label: "Import", icon: BookOpen },
   { id: "write", label: "Write & Edit", icon: Wand2 },
+  { id: "characters", label: "Characters", icon: Users },
   { id: "cover", label: "Cover", icon: ImageIcon },
   { id: "front", label: "Front Matter", icon: LayoutIcon },
   { id: "preview", label: "Preview", icon: Eye },
@@ -90,8 +92,7 @@ export default function Studio() {
                 tab === t.id ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-100"
               }`}
             >
-              <t.icon size={18} />
-              {t.label}
+              <t.icon size={18} /> {t.label}
               {t.id === "ai" && tab !== "ai" && (
                 <span className="ml-auto rounded-full bg-indigo-100 text-indigo-700 px-2 py-0.5 text-[10px] font-bold">AI</span>
               )}
@@ -102,6 +103,7 @@ export default function Studio() {
         <main className="flex-1 overflow-y-auto p-6">
           {tab === "upload" && <UploadZone onImported={handleImported} />}
           {tab === "write" && <Editor project={project} patch={patch} />}
+          {tab === "characters" && <CharacterDevelopment project={project} patch={patch} />}
           {tab === "cover" && <CoverCreator project={project} patch={patch} />}
           {tab === "front" && <FrontMatter project={project} patch={patch} />}
           {tab === "preview" && <Preview project={project} />}

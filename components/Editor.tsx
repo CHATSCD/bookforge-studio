@@ -41,12 +41,8 @@ export default function Editor({ project, patch }: { project: Project; patch: (p
       </div>
 
       <div className="flex gap-2">
-        <button onClick={() => setView("manuscript")} className={view === "manuscript" ? "btn-primary" : "btn-secondary"}>
-          Manuscript
-        </button>
-        <button onClick={() => setView("chapters")} className={view === "chapters" ? "btn-primary" : "btn-secondary"}>
-          Chapters ({project.chapters.length})
-        </button>
+        <button onClick={() => setView("manuscript")} className={view === "manuscript" ? "btn-primary" : "btn-secondary"}>Manuscript</button>
+        <button onClick={() => setView("chapters")} className={view === "chapters" ? "btn-primary" : "btn-secondary"}>Chapters ({project.chapters.length})</button>
       </div>
 
       {view === "manuscript" ? (
@@ -73,27 +69,15 @@ export default function Editor({ project, patch }: { project: Project; patch: (p
             <div key={c.id} className="card">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-bold text-slate-400">#{i + 1}</span>
-                <input
-                  className="input flex-1 font-semibold"
-                  value={c.title}
-                  onChange={(e) => updateChapter(c.id, { title: e.target.value })}
-                />
+                <input className="input flex-1 font-semibold" value={c.title} onChange={(e) => updateChapter(c.id, { title: e.target.value })} />
                 <button className="btn-secondary p-2" onClick={() => move(i, -1)} title="Move up"><ArrowUp size={14} /></button>
                 <button className="btn-secondary p-2" onClick={() => move(i, 1)} title="Move down"><ArrowDown size={14} /></button>
                 <button className="btn-secondary p-2 text-rose-600" onClick={() => remove(i)} title="Delete"><Trash2 size={14} /></button>
               </div>
-              <textarea
-                className="input resize-y font-serif text-sm leading-relaxed"
-                rows={5}
-                value={c.body}
-                onChange={(e) => updateChapter(c.id, { body: e.target.value })}
-                placeholder="Chapter text…"
-              />
+              <textarea className="input resize-y font-serif text-sm leading-relaxed" rows={5} value={c.body} onChange={(e) => updateChapter(c.id, { body: e.target.value })} placeholder="Chapter text…" />
             </div>
           ))}
-          <button className="btn-secondary" onClick={add}>
-            <Plus size={16} /> Add chapter
-          </button>
+          <button className="btn-secondary" onClick={add}><Plus size={16} /> Add chapter</button>
         </div>
       )}
     </div>

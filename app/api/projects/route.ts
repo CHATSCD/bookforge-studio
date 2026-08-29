@@ -6,13 +6,13 @@ export const runtime = "nodejs";
 export async function POST(req: NextRequest) {
   if (!supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
   const body = await req.json();
-
   const row = {
     title: body.title,
     author: body.author,
     subtitle: body.subtitle,
     raw_text: body.rawText,
     chapters: body.chapters || [],
+    characters: body.characters || [],
     settings: body.settings || {},
     cover: body.cover || {},
     front_matter: body.frontMatter || {},
@@ -33,13 +33,11 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   if (!supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
   const id = req.nextUrl.searchParams.get("id");
-
   if (id) {
     const { data, error } = await supabase.from("projects").select("*").eq("id", id).single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ project: data });
   }
-
   const { data, error } = await supabase
     .from("projects")
     .select("id,title,author,updated_at")
@@ -53,7 +51,6 @@ export async function DELETE(req: NextRequest) {
   if (!supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
-
   const { error } = await supabase.from("projects").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true });

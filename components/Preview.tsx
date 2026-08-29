@@ -17,7 +17,6 @@ function Paragraphs({ text }: { text: string }) {
 
 export default function Preview({ project }: { project: Project }) {
   const s = project.settings;
-
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-4">
@@ -50,6 +49,26 @@ export default function Preview({ project }: { project: Project }) {
           </div>
         )}
 
+        {s.includeDramatisPersonae && project.characters.length > 0 && (
+          <div className="book-page">
+            <div className="pt-16">
+              <h2 className="text-center text-2xl font-serif font-bold mb-8">{s.dramatisTitle || "Dramatis Personae"}</h2>
+              <div className="space-y-4">
+                {project.characters.map((ch) => (
+                  <div key={ch.id}>
+                    <p className="font-serif font-bold text-[13px]">
+                      {ch.name} <span className="italic font-normal text-slate-500">({ch.role})</span>
+                    </p>
+                    {ch.appearance && <p className="text-[12px] text-slate-600">{ch.appearance}</p>}
+                    {ch.personality && <p className="text-[12px] text-slate-600">{ch.personality}</p>}
+                    {ch.backstory && <p className="text-[12px] text-slate-600">{ch.backstory}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {s.includeToc && project.chapters.length > 0 && (
           <div className="book-page">
             <div className="pt-16 text-center">
@@ -64,9 +83,7 @@ export default function Preview({ project }: { project: Project }) {
         )}
 
         {project.chapters.length === 0 ? (
-          <div className="book-page text-center text-slate-400 pt-20">
-            Import a manuscript and auto-structure it to see chapters here.
-          </div>
+          <div className="book-page text-center text-slate-400 pt-20">Import a manuscript and auto-structure it to see chapters here.</div>
         ) : (
           project.chapters.map((c) => (
             <div key={c.id} className="book-page">

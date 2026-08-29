@@ -112,12 +112,18 @@ export default function CoverCreator({ project, patch }: { project: Project; pat
   }, [project.title, project.subtitle, project.author, c]);
 
   const runAI = async () => {
-    setAiBusy(true); setAiAdvice("");
+    setAiBusy(true);
+    setAiAdvice("");
     try {
       const res = await fetch("/api/deepseek", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "cover", title: project.title, genre: "fiction", text: project.settings.blurb || project.rawText.slice(0, 1200) }),
+        body: JSON.stringify({
+          mode: "cover",
+          title: project.title,
+          genre: "fiction",
+          text: project.settings.blurb || project.rawText.slice(0, 1200),
+        }),
       });
       const data = await res.json();
       setAiAdvice(data.text || "No response.");
@@ -142,13 +148,9 @@ export default function CoverCreator({ project, patch }: { project: Project; pat
           <canvas ref={canvasRef} width={CW} height={CH} className="rounded-xl shadow-2xl" style={{ width: 280, height: 448 }} />
         </div>
         <div className="flex gap-2 justify-center">
-          <button className="btn-primary" onClick={download}>
-            <Download size={16} /> Download PNG (KDP 1600×2560)
-          </button>
+          <button className="btn-primary" onClick={download}><Download size={16} /> Download PNG (KDP 1600×2560)</button>
         </div>
-        <p className="text-center text-xs text-slate-500">
-          Sized for Amazon KDP paperback (6×9in @ 300dpi). Also embeds into EPUB / PDF / DOCX exports.
-        </p>
+        <p className="text-center text-xs text-slate-500">Sized for Amazon KDP paperback (6×9in @ 300dpi). Also embeds into EPUB / PDF / DOCX exports.</p>
       </div>
 
       <div className="space-y-4">
@@ -174,9 +176,7 @@ export default function CoverCreator({ project, patch }: { project: Project; pat
                 <ColorField label="To" value={c.bgTo} onChange={(v) => patch({ cover: { ...c, bgTo: v } })} />
               </>
             )}
-            {c.bgType === "solid" && (
-              <ColorField label="Color" value={c.bgSolid} onChange={(v) => patch({ cover: { ...c, bgSolid: v } })} />
-            )}
+            {c.bgType === "solid" && <ColorField label="Color" value={c.bgSolid} onChange={(v) => patch({ cover: { ...c, bgSolid: v } })} />}
             {c.bgType === "image" && (
               <div className="col-span-2 space-y-2">
                 <div className="flex gap-2">
@@ -219,16 +219,11 @@ export default function CoverCreator({ project, patch }: { project: Project; pat
             { key: "showTagline", label: "Show tagline" },
           ].map((t) => (
             <label key={t.key} className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={c[t.key as "showSubtitle"]} onChange={(e) => patch({ cover: { ...c, [t.key]: e.target.checked } })} />
-              {t.label}
+              <input type="checkbox" checked={c[t.key as "showSubtitle"]} onChange={(e) => patch({ cover: { ...c, [t.key]: e.target.checked } })} /> {t.label}
             </label>
           ))}
-          {c.showSeries && (
-            <input className="input" placeholder="Series (e.g. The Chronicles #1)" value={c.seriesText} onChange={(e) => patch({ cover: { ...c, seriesText: e.target.value } })} />
-          )}
-          {c.showTagline && (
-            <input className="input" placeholder="Tagline" value={c.tagline} onChange={(e) => patch({ cover: { ...c, tagline: e.target.value } })} />
-          )}
+          {c.showSeries && <input className="input" placeholder="Series (e.g. The Chronicles #1)" value={c.seriesText} onChange={(e) => patch({ cover: { ...c, seriesText: e.target.value } })} />}
+          {c.showTagline && <input className="input" placeholder="Tagline" value={c.tagline} onChange={(e) => patch({ cover: { ...c, tagline: e.target.value } })} />}
         </div>
 
         {aiAdvice && (

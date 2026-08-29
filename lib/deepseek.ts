@@ -9,13 +9,9 @@ export async function callDeepSeek(
 ): Promise<string> {
   const key = process.env.DEEPSEEK_API_KEY;
   if (!key) throw new Error("DEEPSEEK_API_KEY is not configured.");
-
   const res = await fetch("https://api.deepseek.com/chat/completions", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
     body: JSON.stringify({
       model: "deepseek-chat",
       messages,
@@ -23,12 +19,10 @@ export async function callDeepSeek(
       max_tokens: opts.maxTokens ?? 2200,
     }),
   });
-
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`DeepSeek API error ${res.status}: ${body.slice(0, 300)}`);
   }
-
   const data = await res.json();
   return data.choices?.[0]?.message?.content ?? "";
 }

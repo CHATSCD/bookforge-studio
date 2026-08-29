@@ -28,10 +28,13 @@ export async function buildPdf(p: ExportPayload): Promise<Uint8Array> {
 
   let page = doc.addPage([W, H]);
   let y = H - M;
-
-  const newPage = () => { page = doc.addPage([W, H]); y = H - M; };
-  const need = (h: number) => { if (y - h < M) newPage(); };
-
+  const newPage = () => {
+    page = doc.addPage([W, H]);
+    y = H - M;
+  };
+  const need = (h: number) => {
+    if (y - h < M) newPage();
+  };
   const drawLines = (lines: string[], size: number, f: PDFFont, opts: { center?: boolean } = {}) => {
     const lh = size * 1.5;
     for (const ln of lines) {
@@ -41,7 +44,6 @@ export async function buildPdf(p: ExportPayload): Promise<Uint8Array> {
       y -= lh;
     }
   };
-
   const para = (text: string, size: number, opts: { center?: boolean; indent?: boolean; gap?: number; bold?: boolean } = {}) => {
     const f = opts.bold ? bold : font;
     const maxW = W - M * 2 - (opts.indent ? size * 1.25 : 0);
@@ -73,9 +75,7 @@ export async function buildPdf(p: ExportPayload): Promise<Uint8Array> {
   // Copyright
   if (p.includeCopyright) {
     newPage();
-    for (const block of p.copyright.split("\n\n")) {
-      para(block, 8.5, { gap: 8 });
-    }
+    for (const block of p.copyright.split("\n\n")) para(block, 8.5, { gap: 8 });
   }
 
   // TOC
@@ -90,6 +90,18 @@ export async function buildPdf(p: ExportPayload): Promise<Uint8Array> {
     newPage();
     y = H * 0.45;
     drawLines(wrap(p.dedication, font, 16, W - M * 2), 16, font, { center: true });
+  }
+
+  // Dramatis Personae
+  if (p.includeDramatisPersonae && p.characters?.length) {
+    newPage();
+    para(p.dramatisTitle || "Dramatis Personae", 22, { center: true, bold: true, gap: 18 });
+    p.characters.forEach((ch) => {
+      para(`${ch.name} (${ch.role})`, 13, { bold: true, gap: 4 });
+      if (ch.appearance) para(ch.appearance, 10, { gap: 2 });
+      if (ch.personality) para(ch.personality, 10, { gap: 2 });
+      if (ch.backstory) para(ch.backstory, 10, { gap: 8 });
+    });
   }
 
   // Chapters
